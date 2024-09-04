@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Aina FNB</title>
+    <style>
+        * {
+            font-family: 'Poppins','Arial';
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .food {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #f2f2f2;
+            border: 1px solid black;
+            border-radius: 25px;
+            padding: 1rem;
+            box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
+        }
+
+        .food > * {
+            text-align: left;
+            margin: 0.25rem;
+            width: 20vw;
+            color: whi;
+        }
+
+        .outside {
+            display: flex;
+            justify-content: center;
+        }
+
+        .order {
+            text-align: center;
+            font-size: 1rem;
+            color: white;
+            background-color: #258ec7;
+            border: 0px;
+            border-radius: 5px;
+            padding: 0.5rem 1.5rem;
+            width: fit-content;
+        }
+
+        .order:hover {
+            background-color: #2085bc;
+        }
+
+        body {
+            padding: 0.5rem;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Aina FNB!</h1>
+    </div>
+
+
+    <h2>Order your food:</h2>
+    <div class="outside">
+        <div class="container food">
+            <h3>Name:</h3>
+            <p>{{name}}</p>
+            <h3>Price:</h3>
+            <p>{{price}}</p>
+            <h3>Ready?:</h3>
+            <p>{{ready}}</p>
+            <h3>Description:</h3>
+            <p>{{description}}</p>
+            <button class="order">Order</button>
+        </div>
+    </div>
+</body>
+</html>
