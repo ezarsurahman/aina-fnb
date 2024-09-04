@@ -1,5 +1,4 @@
 from django.test import TestCase, Client
-from django.utils import timezone
 from .models import FoodEntry
 
 class mainTest(TestCase):
@@ -15,12 +14,11 @@ class mainTest(TestCase):
         response = Client().get('/skibidi/')
         self.assertEqual(response.status_code, 404)
 
-    # def test_strong_mood_user(self):
-    #     now = timezone.now()
-    #     mood = MoodEntry.objects.create(
-    #       mood="LUMAYAN SENANG",
-    #       time = now,
-    #       feelings = "senang sih, cuman tadi baju aku basah kena hujan :(",
-    #       mood_intensity = 8,
-    #     )
-    #     self.assertTrue(mood.is_mood_strong)
+    def test_pricy_food(self):
+        food = FoodEntry.objects.create(
+        name = "Nasi Goreng",
+        price = 50001,
+        ready = "Ready",
+        description = "Tasty frieed rice"
+        )
+        self.assertTrue(food.is_pricy)

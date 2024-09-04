@@ -7,7 +7,5 @@ class FoodEntry(models.Model):
     description = models.CharField(max_length=255)
 
     @property
-    def is_ready(self):
-        if self.ready:
-            return "Ready!"
-        return "Not Available!"
+    def is_pricy(self):
+        return self.price > 50000
