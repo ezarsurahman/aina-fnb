@@ -106,9 +106,45 @@ Berikut merupakan step-by-step pengerjaan proyek ini:
     python manage.py test
     ```
 
-### Git dan PWS Deploymeny
+### Git dan PWS Deployment
 
 20. Saya membuat repository baru di github lalu menghubungkannya kepada repository yang ada pada lokal (melakukan `git init` terlebih dahulu)
 21. Setelah terhubung, saya melakukan `add`, `commit`, dan `push` ke remote repository github
 22. Untuk melakukan deployment ke PWS, pertama saya menambahkan URL repo saya ke list `ALLOWED_HOST` pada `settings.py`.
 23. Terakhir, saya menyambungkan repository dengan PWS, lalu melakukan push ke repository PWS untuk melakukan deployment.
+
+## Request client ke web aplikasi berbasis Django
+
+Secara singkat, saat user/client berinteraksi dengan website berbasis Django, maka device user akan mengirimkan sebuah HTTP request yang akan diarahkan oleh `urls.py` ke `views.py`. `views.py` memiliki peran penting untuk memilih data apa yang akan ditampilkan kepada user (bisa melalui database yang ada pada `models.py` maupun tidak) dan juga memilih template atau tampilan yang akan ditampilkan (berkas `html`).
+
+`urls.py` -> mengarahkan user ke halaman yang sesuai.
+
+`views.py` -> memilih data (`models.py`) serta tampilan/template (`main.html`) untuk diberikan kepada user
+
+`models.py` -> sebagai database.
+
+`main.html` -> sebagai tampilan/template untuk menampilkan data.
+
+## Fungsi `git` dalam pengembangan perangkat lunak
+
+`git` merupakan salah satu Version Control yang paling banyak digunakan. Berikut merupakan beberapa fungsi utama git:
+
+- Version Control : `git` membuat pelacakan perubahan kode sangat mudah. Fitur ini sangat berguna saat developer memilki bug atau error lalu ingin melakukan debugging. Jika sudah "mentok", developer juga bisa mengembalikannya ke versi sebelumnya
+- Collaborative : Dengan menggunakan layanan online seperti GitHub, developer bisa melakukan development secara bersamaan tanpa harus berada di tempat yang sama. Fitur Branching dan Merge pada `git` sangat berpengaruh dalam aspek kolaborasi.
+
+Dengan Git, pengembangan perangkat lunak menjadi lebih terstruktur, efisien, dan terkelola dengan baik, terutama dalam tim besar atau proyek jangka panjang.
+
+## Mengapa Django?
+
+Menurut saya, salah satu faktor dipilihnya Django adalah karena bahasa pemorgramannya, yaitu Python. Python merupakan bahasa yang sudah dipelajari dari Semester 1. Sehingga, mahasiswa tidak perlu belajar syntax namun langsung fokus di konsep pemrograman berbasis platform. Selain itu, saya mengetahui bahwa Django merupakan framework yang sangat sering digunakan sehingga dokumentasi sudah lengkap dan komunitasnya sudah sangat luas.
+
+## Kenapa models pada Django disebut sebagai ORM?
+
+Models pada Django disebut sebagai ORM karena (Object Relational Mapping) karena sifat dari models yang mengonversi data menjadi tabel secara langsung. Akibatnya, developer tidak perlu berhubungan langsung dengan tabel-tabel data seperti SQL, namun bisa langsung membuat dan mengakses data dari model. `<br />`
+
+
+Sekian jawaban dari saya. Terimakasih `<br />`
+
+Salam `<br />`
+
+Ezar
