@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 {% block meta %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,54 +57,22 @@
             padding: 0.5rem;
             background-color: white;
         }
-
-        .food_img {
-            height: 100px;
-            width: 100px;
-            object-fit: cover;
-        }
-
-        .outside {
-            gap: 1rem;
-        }
     </style>
 {% endblock meta %}
 {% block content %}
-<div class="container">
-    <h1>Welcome to Aina Homecook!</h1>
-</div>
+<h1>Add New Food Entry</h1>
 
-<p>Nama Aplikasi : {{nama_aplikasi}}</p>
-<p>Nama Mahasiswa : {{nama_saya}}</p>
-<p>Kelas: {{kelas_saya}}</p>
-<h2>Order your food:</h2>
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Add Food Entry" />
+      </td>
+    </tr>
+  </table>
+</form>
 
-    {% if not food_entries %}
-    <p>Belum ada makanan atau minum di Aina Homecook, silahkan langsung mengunjungi Dallas atau Sutet.</p>
-    {% else %}
-    <div class="outside">
-    {% for food_entry in food_entries %}
-        <div class="container food">
-            <img src={{food_entry.img}} class="food_img" />
-            <h3>Name:</h3>
-            <p>{{food_entry.name}}</p>
-            <h3>Price:</h3>
-            <p>{{food_entry.price}}</p>
-            <h3>Ready?:</h3>
-            <p>{{food_entry.ready}}</p>
-            <h3>Description:</h3>
-            <p>{{food_entry.description}}</p>
-            <button class="order">Order</button>
-        </div>
-    {% endfor %}
-    </div>
-    {% endif %}
-    
-    <br />
-
-    <a href="{% url 'main:create_food_entry' %}">
-    <button>Add New Food</button>
-    </a>
-
-{% endblock content %}
-
+{% endblock %}
