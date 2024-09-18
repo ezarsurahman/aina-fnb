@@ -142,9 +142,29 @@ Menurut saya, salah satu faktor dipilihnya Django adalah karena bahasa pemorgram
 
 Models pada Django disebut sebagai ORM karena (Object Relational Mapping) karena sifat dari models yang mengonversi data menjadi tabel secara langsung. Akibatnya, developer tidak perlu berhubungan langsung dengan tabel-tabel data seperti SQL, namun bisa langsung membuat dan mengakses data dari model. `<br />`
 
-
 Sekian jawaban dari saya. Terimakasih `<br />`
 
 Salam `<br />`
 
 Ezar
+
+# Tugas 3
+
+## Implementasi Checklist
+
+1. Pertama, saya membuat sebuah template yang akan digunakan oleh template template lainnya. Hal ini dilakukan dengan cara membuat direktori baru di direktori utama proyek yang bernama `templates` lalu membuat sebuah file dengan nama `base.html`
+2. Selanjutnya, saya isi `base.html` dengan boileprplate HTML dengan mengisi bagian `meta`  dengan ` {% block meta %} {% endblock meta %}` dan   `body` dengan `{% block content %} {% endblock content %}` untuk digunakan di template-template selanjutnya.
+3. Agar `base.html` bisa dianggap sebagai template, saya menambahkan `[BASE_DIR/'templates']` pada setting `'DIRS'` yang ada di `settings.py` pada direktori project.
+4. Setelah itu, saya mengubah isi dari `main.html` pada direktori `main/templates` agar `main.html` mengikuti base template yang sudah dibuat.
+5. Untuk mengubah primary key setiap record dengan UUID, saya menambahkan 1 attribute pada `models.py` yang ada pada direktori `main` yaitu `id` yang menggunakan UUID sebagai value nya. id ini akan dibuat secara otomatis saat ada record baru yang ditambahkan ke database.
+6. Untuk mengimplementasi perubahan yang dibuat, saya melakukan command:
+   ```
+   python3 manage.py makemigrations
+   python3 manage.py migrate
+   ```
+7. Selanjutnya, saya membuat form pertambahan makanan yang ada di file `forms.py` pada direktori `main` . Form ini meminta field-field sesuai dengan attribute yang dibutuhkan pada `models.py`.
+8. Untuk mengaplikasikan form pada website, pertama saya menambahkan function `create_food_entry` pada file `views.py` pada `main` . function ini berisi logic untuk memeriksa kevalidasian form dan menyimpan object saat di input. Function ini akan menampilkan page form.
+9. Di file yang sama, saya menambahkan `food_entries` yang mengambil semua object yang ada pada database untuk ditampilkan pada website.
+10. pada `urls.py` yang ada pada direktori `main`, saya menambahkan path `create-food-entry` sebagai form untuk menginput data.
+11. Untuk tampilan pada website, saya membuat template `create_food_entry.html` di direktori `templates` pada `main` yang akan menampilkan form dalam bentuk sebuah tabel.
+12.
