@@ -171,6 +171,7 @@ Kita membutuhkan `csrf_token` saat membuat form di Django untuk melindungi aplik
 ## Screenshot Postman
 
 ### XML semua object
+
 <img width="1271" alt="Screenshot 2024-09-17 at 13 38 24" src="https://github.com/user-attachments/assets/ccda0e4d-0612-4036-97fd-2b9d6e51af61">
 ### JSON Semua Object
 <img width="1273" alt="Screenshot 2024-09-17 at 13 38 35" src="https://github.com/user-attachments/assets/45d8174f-8e89-4b4d-8614-000badca09a3">
