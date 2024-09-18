@@ -115,6 +115,8 @@ Berikut merupakan step-by-step pengerjaan proyek ini:
 
 ## Request client ke web aplikasi berbasis Django
 
+[![Screenshot-2024-09-18-at-09-47-38.png](https://i.postimg.cc/6qy7Z9Yr/Screenshot-2024-09-18-at-09-47-38.png)](https://postimg.cc/RJxV5zrh)[![Screenshot-2024-09-18-at-09-47-38.png](https://i.postimg.cc/6qy7Z9Yr/Screenshot-2024-09-18-at-09-47-38.png)](https://postimg.cc/RJxV5zrh)
+
 Secara singkat, saat user/client berinteraksi dengan website berbasis Django, maka device user akan mengirimkan sebuah HTTP request yang akan diarahkan oleh `urls.py` ke `views.py`. `views.py` memiliki peran penting untuk memilih data apa yang akan ditampilkan kepada user (bisa melalui database yang ada pada `models.py` maupun tidak) dan juga memilih template atau tampilan yang akan ditampilkan (berkas `html`).
 
 `urls.py` -> mengarahkan user ke halaman yang sesuai.
@@ -150,6 +152,32 @@ Ezar
 
 # Tugas 3
 
+## Mengapa kita memerlukan Data Delivery?
+
+Pada website yang menggunakan data dinamis, tentu sangat sulit dan banyak effort yang dilakukan jika kode `html` nya selalu diupdate berdasarkan input dari User. Oleh karena itu, kita membutuhkan data delivery agar penyampaian dan pengaksesan data dapat dilakukan secara otomatis dan real-time.
+
+## JSON vs XML
+
+Dibandingkan dengan XML, JSON lebih ringan, lebih mudah dibaca, dan lebih mudah ditulis oleh manusia serta lebih efisien untuk mesin. Karena JSON menggunakan struktur berbasis objek, JSON lebih sesuai untuk aplikasi web modern, terutama dalam komunikasi client-server. Di lain sisi, XML memiliki markup yang lebih kompleks dan lebih berat.
+
+## `is_valid()` pada form Django
+
+function `is_valid()` memastikan apakah semua field terisi dengan jenis datafield yang dibutuhkan dan tidak boleh ada field yang kosong. Sebenarnya, `is_valid()` juga bisa dibuat dengan settingan custom namun pada saat ini, `is_valid()` hanya digunakan untuk validasi datatype
+
+## `csrf_token`: apa fungsinya?
+
+Kita membutuhkan `csrf_token` saat membuat form di Django untuk melindungi aplikasi dari serangan CSRF (Cross-Site Request Forgery), di mana penyerang dapat mengeksploitasi sesi pengguna yang sah untuk menjalankan aksi berbahaya tanpa sepengetahuan pengguna. Jika kita tidak menambahkan `csrf_token`, aplikasi menjadi rentan terhadap serangan ini, di mana penyerang bisa memalsukan permintaan dari pengguna dengan cara mengirimkan form palsu dari domain yang berbeda. Tanpa validasi `csrf_token`, server tidak bisa membedakan apakah permintaan tersebut sah atau berasal dari sumber yang tidak valid, yang dapat menyebabkan perubahan data tanpa izin.
+
+## Screenshot Postman
+
+### XML semua object
+
+[![Screenshot-2024-09-17-at-13-38-24.png](https://i.postimg.cc/qqSNX959/Screenshot-2024-09-17-at-13-38-24.png)](https://postimg.cc/30jr3b7B)
+
+### JSON Semua Object
+
+[![Screenshot-2024-09-17-at-13-38-24.png](https://i.postimg.cc/qqSNX959/Screenshot-2024-09-17-at-13-38-24.png)](https://postimg.cc/30jr3b7B)
+
 ## Implementasi Checklist
 
 1. Pertama, saya membuat sebuah template yang akan digunakan oleh template template lainnya. Hal ini dilakukan dengan cara membuat direktori baru di direktori utama proyek yang bernama `templates` lalu membuat sebuah file dengan nama `base.html`
@@ -167,4 +195,7 @@ Ezar
 9. Di file yang sama, saya menambahkan `food_entries` yang mengambil semua object yang ada pada database untuk ditampilkan pada website.
 10. pada `urls.py` yang ada pada direktori `main`, saya menambahkan path `create-food-entry` sebagai form untuk menginput data.
 11. Untuk tampilan pada website, saya membuat template `create_food_entry.html` di direktori `templates` pada `main` yang akan menampilkan form dalam bentuk sebuah tabel.
-12.
+12. Untuk mengimplementasi function `views.py` agar bisa menampilkan data dengan format XML atau JSON, saya menggunakan `serializers` untuk menampilkan data nya.
+13. Pertama, saya membuat function `show_xml` yang mengambil seluruh data lalu menggunakan serializer untuk show dalam bentuk XML. Hal yang sama saya lakukan untuk `show_json` yang menampilkan JSON.
+14. Untuk function search by id, saya membuat function `show_xml_by_id` dan `show_json_by_id` yang akan memfilter object berdasarkan ID.
+15. Terakhir, saya menyambungkannya ke web dengan cara membuat path untuk masing-masing function yang sudah di buat.
