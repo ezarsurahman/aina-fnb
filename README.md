@@ -207,3 +207,12 @@ Kita membutuhkan `csrf_token` saat membuat form di Django untuk melindungi aplik
 14. Untuk function search by id, saya membuat function `show_xml_by_id` dan `show_json_by_id` yang akan memfilter object berdasarkan ID.
 15. Terakhir, saya menyambungkannya ke web dengan cara membuat path untuk masing-masing function yang sudah di buat.
 </details>
+<details>
+<summary>Tugas 3</summary>
+Perbedaan antara HttpResponseRedirect() dan redirect() terletak pada cara keduanya digunakan untuk melakukan redirect URL dan tingkat kontrol yang mereka tawarkan.
+
+HttpResponseRedirect(): Mengembalikan respons HTTP 302 untuk mengarahkan ke URL yang ditentukan. Ini berguna saat Anda membutuhkan lebih banyak kontrol atas respons sebelum mengembalikannya, seperti ketika harus mengarahkan ke situs eksternal.
+redirect(): Secara internal menggunakan HttpResponseRedirect(). Lebih praktis dan fleksibel karena dapat menerima berbagai jenis parameter, seperti URL, pola URL yang diberi nama, atau instance model.
+Singkatnya, redirect() lebih sederhana dan fleksibel, sehingga lebih mudah digunakan dalam berbagai skenario. Sedangkan, HttpResponseRedirect() lebih baik digunakan ketika dibutuhkan kontrol lebih atas respons yang diberikan.
+
+</details>
