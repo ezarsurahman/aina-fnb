@@ -1,6 +1,6 @@
-# `<details>`
+<details>
 
-# `<summary>`Tugas 2 PBP - Ezar Akhdan Shada Surahman`</summary>`
+ <summary>Tugas 2 PBP - Ezar Akhdan Shada Surahman</summary>
 
 Markdown ini dibuat untuk memenuhi Tugas 2 PBP dengan nama aplikasi "Aina Homecook". `<br />` Link Deployment PWS : http://ezar-akhdan-ainafnb.pbp.cs.ui.ac.id/
 
