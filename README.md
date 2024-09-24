@@ -208,11 +208,112 @@ Kita membutuhkan `csrf_token` saat membuat form di Django untuk melindungi aplik
 15. Terakhir, saya menyambungkannya ke web dengan cara membuat path untuk masing-masing function yang sudah di buat.
 </details>
 <details>
-<summary>Tugas 3</summary>
+<summary>Tugas 4</summary>
+
+### Perbedaan antara HttpResponseRedirect() dan redirect()
 Perbedaan antara HttpResponseRedirect() dan redirect() terletak pada cara keduanya digunakan untuk melakukan redirect URL dan tingkat kontrol yang mereka tawarkan.
 
 HttpResponseRedirect(): Mengembalikan respons HTTP 302 untuk mengarahkan ke URL yang ditentukan. Ini berguna saat Anda membutuhkan lebih banyak kontrol atas respons sebelum mengembalikannya, seperti ketika harus mengarahkan ke situs eksternal.
 redirect(): Secara internal menggunakan HttpResponseRedirect(). Lebih praktis dan fleksibel karena dapat menerima berbagai jenis parameter, seperti URL, pola URL yang diberi nama, atau instance model.
 Singkatnya, redirect() lebih sederhana dan fleksibel, sehingga lebih mudah digunakan dalam berbagai skenario. Sedangkan, HttpResponseRedirect() lebih baik digunakan ketika dibutuhkan kontrol lebih atas respons yang diberikan.
+
+### Penghubungan model `food_entry` dengan `User`
+Model `FoodEntry` terhubung ke model `User` melalui foreign key di `models.py`:
+```
+class FoodEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+```
+Ketika `FoodEntry` dibuat menggunakan fungsi `create_food_entry` (di `views.py`), entri tersebut terhubung dengan User yang sesuai.
+```
+def create_food_entry(request):
+    form = FoodEntryForm(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        food_entry = form.save(commit=False)
+        food_entry.user = request.user
+        food_entry.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_food_entry.html", context)
+```
+
+### Apa perbedaan antara authentication dan authorization, apakah yang dilakukan saat pengguna login? Jelaskan bagaimana Django mengimplementasikan kedua konsep tersebut.
+
+Autentikasi adalah proses untuk memverifikasi identitas pengguna guna memastikan bahwa mereka adalah yang mereka klaim. Contohnya, dengan memasukkan username, password, atau OTP saat login. Dalam Django, autentikasi dilakukan menggunakan fungsi `authenticate()` dan `login()`.
+
+Otorisasi berkaitan dengan menentukan tindakan atau sumber daya apa yang boleh diakses oleh pengguna setelah mereka diautentikasi. Di Django, otorisasi dikelola menggunakan permissions dan groups, serta dekorator seperti `@login_required` untuk mengontrol akses ke tampilan.
+
+Ketika seorang pengguna login:
+1. Menyediakan Kredensial: Pengguna mengirimkan username dan password.
+2. Autentikasi: Sistem memverifikasi apakah kredensial cocok dengan data yang disimpan menggunakan fungsi `authenticate()` dari Django.
+3. Pembuatan Sesi: Jika terautentikasi, Django membuat sesi untuk pengguna, menyimpan ID sesi sebagai cookie di browser.
+4. Otorisasi: Sistem memeriksa permissions dan peran pengguna untuk menentukan sumber daya yang dapat diakses.
+5. Redirect: Jika berhasil, pengguna diarahkan ke halaman tujuan.
+
+### Bagaimana Django mengingat pengguna yang telah login? Jelaskan kegunaan lain dari cookies dan apakah semua cookies aman digunakan?
+Django mengingat pengguna yang login melalui sesi yang disimpan dalam cookies. Ketika pengguna login, Django membuat sesi, menyimpan data sesi di server, dan memberikan ID sesi unik kepada pengguna. ID sesi ini dikirim ke browser pengguna sebagai cookie bernama sessionid. Setiap kali pengguna membuat permintaan baru, browser mengirim kembali cookie sessionid ke server, memungkinkan Django mengidentifikasi pengguna.
+
+Cookies juga dapat digunakan untuk menyimpan preferensi pengguna, pelacakan, keranjang belanja dalam e-commerce, dan token keamanan. Namun, tidak semua cookies aman digunakan. Ada beberapa kekhawatiran terkait keamanan dan privasi. Cookies bisa rentan terhadap serangan seperti Cross-Site Scripting (XSS) dan Cross-Site Request Forgery (CSRF) jika tidak dikelola dengan benar. Selain itu, cookies pelacakan dapat menimbulkan masalah privasi yang signifikan karena sering kali mengumpulkan data perilaku pengguna tanpa persetujuan eksplisit.
+
+### Implementasi ceklist
+1. Untuk mengimplementasikan register, login, dan sign up, beberapa function perlu di import:
+    - `UserCreationForm` digunakan untuk mengimplementasikan fungsi registrasi.
+    - `AuthenticationForm`, `authenticate`, dan `login` digunakan untuk mengimplementasikan fungsi login.
+    - `logout` digunakan untuk mengimplementasikan fungsi logout.
+    - `datetime`, `HttpResponseRedirect`, dan `reverse` digunakan untuk mengelola cookies.
+2. Untuk mengaplikasikan cookies, beberapa perubahan perlu ditambahkan di function `show_main`:
+```
+...
+context = {
+        ...
+        'last_login' : request.COOKIES['last_login']
+    }
+...
+```
+3. Saya membuat file `login.html` dan `register.html` pada direktori `main/templates` sebagai template untuk melakukan login dan register
+4. Untuk mengimplementasikan logout, saya menambahkan sebuah button di dalam template `main.html`
+5. Agar function-function baru tersebut bisa berjalan di aplikasi, perlu ditambahkan routing pada `urls.py`:
+```
+path('register/', register, name='register'),
+path('login/', login_user, name="login"),
+path('logout/', logout_user, name="logout"),
+```
+6. Untuk merestriksi halaman main dari user random, saya menggunakan decorator `@login_required` pada function `show_main` di `views.py`.
+```
+@login_required(login_url='login/')
+```
+7. Untuk mengubungkan `FoodEntry` yang sesuai untuk setiap user, saya menambah attribute pada `models.py`:
+```
+user = models.ForeignKey(User, on_delete=models.CASCADE)
+```
+8. Setelah melakukan perubahan tersebut, tidak lupa untuk melakukan `makemigrations` dan `migrate` agar perubahan models teraplikasi.
+9. Untuk menyimpan `FoodEntry` milik user dengan baik di database, perlu ditambahkan attribute user saat menyimpan form. Saya mengubah `create_food_entry`:
+```
+def create_food_entry(request):
+    form = FoodEntryForm(request.POST or None)
+    if form.is_valid() and request.method == "POST":
+        food_entry = form.save(commit=False)
+        food_entry.user = request.user
+        food_entry.save()
+        return redirect('main:show_main')
+
+    context = {'form': form}
+    return render(request, "create_food_entry.html", context)
+```
+9. Agar setiap user hanya bisa melihat `FoodEntry` milik masing-masing, saya merubah show main sehingga data yang diambil di-filter berdasarkan user yang terlogin:
+```
+@login_required(login_url='login/')
+def show_main(request):
+    food_entries = FoodEntry.objects.filter(user=request.user)
+    context = {
+        'name' : request.user.username,
+        'food_entries': food_entries,
+        'nama_aplikasi': "Aina Homecook",
+        "nama_saya" : "Ezar Akhdan Shada Surahman",
+        "kelas_saya" : "PBP B",
+        'last_login' : request.COOKIES['last_login']
+    }
+    return render(request, "main.html", context)
+```
 
 </details>
