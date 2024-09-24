@@ -154,8 +154,8 @@ Salam `<br />`
 Ezar
 
 </details>
-
-# Tugas 3
+<details>
+<summary>Tugas 3</summary>
 
 ## Mengapa kita memerlukan Data Delivery?
 
@@ -206,3 +206,4 @@ Kita membutuhkan `csrf_token` saat membuat form di Django untuk melindungi aplik
 13. Pertama, saya membuat function `show_xml` yang mengambil seluruh data lalu menggunakan serializer untuk show dalam bentuk XML. Hal yang sama saya lakukan untuk `show_json` yang menampilkan JSON.
 14. Untuk function search by id, saya membuat function `show_xml_by_id` dan `show_json_by_id` yang akan memfilter object berdasarkan ID.
 15. Terakhir, saya menyambungkannya ke web dengan cara membuat path untuk masing-masing function yang sudah di buat.
+</details>
