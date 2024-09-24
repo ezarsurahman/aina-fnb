@@ -1,4 +1,6 @@
-# Tugas 2 PBP - Ezar Akhdan Shada Surahman
+# `<details>`
+
+# `<summary>`Tugas 2 PBP - Ezar Akhdan Shada Surahman`</summary>`
 
 Markdown ini dibuat untuk memenuhi Tugas 2 PBP dengan nama aplikasi "Aina Homecook". `<br />` Link Deployment PWS : http://ezar-akhdan-ainafnb.pbp.cs.ui.ac.id/
 
@@ -149,6 +151,8 @@ Sekian jawaban dari saya. Terimakasih `<br />`
 Salam `<br />`
 
 Ezar
+
+</details>
 
 # Tugas 3
 
