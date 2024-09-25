@@ -3,7 +3,7 @@ Markdown ini dibuat untuk memenuhi Tugas 2 PBP dengan nama aplikasi "Aina Homeco
 Link Deployment PWS : http://ezar-akhdan-ainafnb.pbp.cs.ui.ac.id/
 <details>
 
- <summary>Tugas 2 PBP </summary>
+ <summary>Tugas 2 </summary>
 
 ## Step-by-step pengerjaan proyek
 
@@ -315,5 +315,11 @@ def show_main(request):
     }
     return render(request, "main.html", context)
 ```
+### 2 User dan 3 Dummy data
+1. User 1 dengan username chinese_food:
+   <img width="1452" alt="Screenshot 2024-09-25 at 10 26 46" src="https://github.com/user-attachments/assets/404db717-4c6c-482a-94dd-bd586b49d260">
+
+3. User 2 dengan username aina_dallas:
+   <img width="1446" alt="Screenshot 2024-09-25 at 10 27 00" src="https://github.com/user-attachments/assets/4633d0b7-b460-463c-82a8-9ec36cdef52e">
 
 </details>
