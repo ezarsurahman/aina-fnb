@@ -1,80 +1,8 @@
 {% extends 'base.html' %}
 {% block meta %}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Aina FNB</title>
-    <style>
-        * {
-            font-family: 'Poppins','Arial';
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .food {
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: #f2f2f2;
-            border: 1px solid black;
-            border-radius: 25px;
-            padding: 1rem;
-            box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
-        }
-
-        .food > * {
-            text-align: left;
-            margin: 0.25rem;
-            width: 20vw;
-        }
-
-        .food > p {
-            font-weight: 300;
-        }
-
-        .outside {
-            display: flex;
-            width: 100vw;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding-left: 1rem;
-        }
-
-        .order {
-            text-align: center;
-            font-size: 1rem;
-            color: white;
-            background-color: #258ec7;
-            border: 0px;
-            border-radius: 5px;
-            padding: 0.5rem 1.5rem;
-            width: fit-content;
-        }
-
-        .order:hover {
-            background-color: #2085bc;
-        }
-
-        body {
-            padding: 0.5rem;
-            background-color: white;
-        }
-
-        .food_img {
-            height: 100px;
-            width: 100px;
-            object-fit: cover;
-        }
-
-        .outside {
-            gap: 1rem;
-        }
-    </style>
 {% endblock meta %}
 {% block content %}
+{% include 'navbar.html' %}
 <div class="container">
     <h1>Welcome to Aina Homecook!</h1>
 </div>
@@ -104,6 +32,12 @@
             <h3>Description:</h3>
             <p>{{food_entry.description}}</p>
             <button class="order">Order</button>
+            <a href="{% url 'main:edit_food' food_entry.pk %}">
+                <button>Edit</button>
+            </a>
+            <a href="{% url 'main:delete_food' food_entry.pk %}">
+                <button>Delete</button>
+            </a>
         </div>
     {% endfor %}
     </div>
