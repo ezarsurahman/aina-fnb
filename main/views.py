@@ -19,6 +19,7 @@ def show_main(request):
         'nama_aplikasi': "Aina Homecook",
         "nama_saya" : "Ezar Akhdan Shada Surahman",
         "kelas_saya" : "PBP B",
+        "npm" : "2306165894",
         'last_login' : request.COOKIES['last_login']
     }
     return render(request, "main.html", context)
@@ -92,7 +93,10 @@ def edit_food(request,id):
         form.save()
         return HttpResponseRedirect(reverse('main:show_main'))
     
-    context = {'form' : form}
+    context = {
+        'form' : form,
+        'food' : food
+        }
     return render(request, "edit_food.html" , context)
 
 def delete_food(request,id):

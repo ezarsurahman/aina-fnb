@@ -1,102 +1,80 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block meta %}
 <title>Register</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <title>Aina FNB</title>
-    <style>
-        * {
-            font-family: 'Poppins','Arial';
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .food {
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: #f2f2f2;
-            border: 1px solid black;
-            border-radius: 25px;
-            padding: 1rem;
-            box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.5);
-        }
-
-        .food > * {
-            text-align: left;
-            margin: 0.25rem;
-            width: 20vw;
-            color: whi;
-        }
-
-        .outside {
-            display: flex;
-            width: 100vw;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            padding-left: 1rem;
-        }
-
-        .order {
-            text-align: center;
-            font-size: 1rem;
-            color: white;
-            background-color: #258ec7;
-            border: 0px;
-            border-radius: 5px;
-            padding: 0.5rem 1.5rem;
-            width: fit-content;
-        }
-
-        .order:hover {
-            background-color: #2085bc;
-        }
-
-        body {
-            padding: 0.5rem;
-            background-color: white;
-        }
-
-        .food_img {
-            height: 100px;
-            width: 100px;
-            object-fit: cover;
-        }
-
-        .outside {
-            gap: 1rem;
-        }
-    </style>
+<style>
+    body {
+        background-color: #f3f4f6;
+    }
+</style>
 {% endblock meta %}
 
 {% block content %}
+<card class="flex gap-0 m-20 rounded-md border-2 border-black h-1/2 bg-white">
+    <img src="{% static 'image/fotoDallas.jpg_large' %}" alt=""
+    class="hidden md:basis-1/2 md:w-1/2 object-cover md:block">
 
-<div class="login">
-  <h1>Register</h1>
-
-  <form method="POST">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input type="submit" name="submit" value="Daftar" /></td>
-      </tr>
-    </table>
-  </form>
-
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-</div>
-
+    <div class="md:basis-1/2 sm:basis-full flex items-center justify-center py-12 pr-4 pl-4 md:pl-0 sm:px-6 lg:px-8">
+      <div class="max-w-md w-full space-y-8 form-style">
+        <div>
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-green-700">
+            Start ordering right away!
+          </h2>
+        </div>
+        <form class="mt-8 space-y-6" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="remember" value="true">
+          <div class="rounded-md shadow-sm -space-y-px">
+            {% for field in form %}
+              <div class="{% if not forloop.first %}mt-4{% endif %}">
+                <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-green-800">
+                  {{ field.label }}
+                </label>
+                <div class="relative w-full">
+                  {{ field }}
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    {% if field.errors %}
+                      <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                      </svg>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if field.errors %}
+                  {% for error in field.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+    
+          <div>
+            <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+              Register
+            </button>
+          </div>
+        </form>
+    
+        {% if messages %}
+        <div class="mt-4">
+          {% for message in messages %}
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline">{{ message }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+    
+        <div class="text-center mt-4">
+          <p class="text-sm text-green-800">
+            Already have an account?
+            <a href="{% url 'main:login' %}" class="font-medium text-yellow-600 hover:text-yellow-700">
+              Login here
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+</card>
 {% endblock content %}
