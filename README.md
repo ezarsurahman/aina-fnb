@@ -323,3 +323,109 @@ def show_main(request):
    <img width="1446" alt="Screenshot 2024-09-25 at 10 27 00" src="https://github.com/user-attachments/assets/4633d0b7-b460-463c-82a8-9ec36cdef52e">
 
 </details>
+<details>
+<summary>Tugas 5</summary>
+
+### Implementasi Checklist
+1. Untuk menambah fitur edit dan delete menu, saya membuat 2 function baru pada direktori `main/views.py` yaitu function `edit_food` dan `delete_food`, berikut merupakan kedua functionnya:
+```
+def edit_food(request,id):
+    food = FoodEntry.objects.get(pk=id)
+
+    form = FoodEntryForm(request.POST or None, instance=food)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+    
+    context = {
+        'form' : form,
+        'food' : food
+        }
+    return render(request, "edit_food.html" , context)
+
+def delete_food(request,id):
+    food = FoodEntry.objects.get(pk=id)
+    food.delete()
+    return HttpResponseRedirect(reverse("main:show_main"))
+```
+2. Selanjutnya, saya ingin membuat template untuk menampilkan view tersebut. Tapi sebelum itu, saya menghubungkan CDN Tailwind CSS ke file `base.html` di direktori `templates` pada root.
+```
+...
+<script src="https://cdn.tailwindcss.com">
+</script>
+...
+```
+3. Setelah menghubungkan Tailwind, saya membuat file `edit_food.html` dan langsung styling dengan TailwindCSS. 
+4. Agar terintegrasi dengan route website, saya menambahkan routing pada `urls.py` untuk kedua function ini.
+```
+...
+    path('edit-food/<uuid:id>', edit_food, name="edit_food" ),
+    path('delete-food/<uuid:id>', delete_food, name="delete_food")
+...
+```
+5. Selanjutnya, agar bisa menggunakaan file image dan css global, saya membuat konfigurasi static files dengan membuat direktori `static` dan subdirektori `css` dan `image` untuk file-file yang dibutuhkan.
+6. Setelah itu, saya mengkonfigurasi file settings.py dengan menambahkan baris ini pada `MIDDLEWARE`:
+```
+...
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #Tambahkan tepat di bawah SecurityMiddleware
+    ...
+]
+...
+STATIC_URL = '/static/'
+if DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static' # merujuk ke /static root project pada mode development
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static' # merujuk ke /static root project pada mode production
+...
+```
+7. Saya juga menambahan file `global.css` pada direktori `static/css` dengan isi styling yang perlu dirubah dari.
+8. Untuk bisa menggunakan static files yang telah dibuat, setiap template yang berhubungan tersebut harus menambahkan `{% load static %}` agar file static bisa digunakan.
+9. Agar bisa me-reuse component yang dipakai berulang kali seperti navbar dan card, saya membuat component-component tersebut dalam template yang terpisah, lalu bisa saya panggil pada template lain dengan menggunakan `{% include '<nama-file>' %}`, yaitu `navbar.html` pada `templates` di direktori root, dan `card_food.html` serta `card_info.html` pada `main/templates`.
+10. Terakhir, saya melakukan styling dengan TailwindCSS untuk file `create_food_entry.html`, `login.html`, `main.html`, dan `register.html` sampai mendapatkan layout dan design yang saya inginkan.
+
+### Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+1. !important` akan mengesampingkan semua aturan kecuali yang lain juga menggunakan !important.
+2. Inline styles (value = 1000)
+3. ID selectors (value = 100) --> `#card {color: blue}`
+4. Class, pseudo-class, attribute selectors, seperti .class, :hover, [type="text"]. (value = 10) --> `.form {color:green}`
+5. Type selectors (value = 1) --> `p {color:black}`
+6. Universal selector (value = 0)
+Jika terdapat selector yang menggunakan gabungan dari beberapa jenis selector, maka selector dengan value terbesar akan diprioritaskan.
+
+### Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive design sangat penting karena tidak semua user mengakses website dengan device yang memiliki ukuran yang sama. Ada yang mengakses dengan layar smartphone, ada juga yang mengakses dari layar desktop yang pastinya memiliki ukuran lebih besar. Jika design hanya disesuaikan untuk salah satu ukuran, maka user akan kesulitan untuk mengakses fitur-fitur website saat menggunakan ukuran yang berbeda.
+- Aplikasi dengan design yang tidak responsif : Hampir tidak ada, salah satu contoh: https://dequeuniversity.com/library/responsive/1-non-responsive
+- Aplikasi dengan design responsif : website SCELE Fasilkom UI
+
+###  Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+1. Margin
+Pengertian: Margin adalah ruang di luar elemen, antara elemen dengan elemen lain di sekitarnya. Margin digunakan untuk memberi jarak antar elemen.
+Posisi: Margin berada di bagian paling luar dari elemen.
+Pengaturan: Dapat diatur menggunakan margin-top, margin-right, margin-bottom, dan margin-left (atau shorthand margin untuk semua sisi).
+2. Border
+Pengertian: Border adalah garis yang mengelilingi elemen, di antara padding dan margin. Border bisa diatur ketebalannya, jenisnya (solid, dashed, dll.), serta warnanya.
+Posisi: Border berada di antara margin dan padding.
+Pengaturan: Dapat diatur menggunakan border-top, border-right, border-bottom, border-left, atau shorthand border.
+3. Padding
+Pengertian: Padding adalah ruang di dalam elemen, antara isi elemen (content) dengan border. Padding digunakan untuk memberi jarak antara konten dengan tepi elemen.
+Posisi: Padding berada di antara konten elemen dan border.
+Pengaturan: Dapat diatur menggunakan padding-top, padding-right, padding-bottom, dan padding-left (atau shorthand padding untuk semua sisi).
+
+#### Perbandingan dan Ilustrasi
+Jika kita membayangkan elemen sebagai sebuah kotak:
+- Padding adalah ruang antara konten elemen dan garis tepi kotak.
+- Border adalah garis tepi kotak.
+- Margin adalah ruang di luar kotak, yang memisahkan elemen dari elemen lainnya.
+
+### Flexbox dan Grid
+**Flexbox** adalah sistem tata letak di CSS yang digunakan untuk mengatur elemen dalam satu arah, baik secara horizontal (baris) maupun vertikal (kolom). Flexbox memudahkan pemosisian dan distribusi elemen di dalam sebuah kontainer fleksibel, serta mendukung penyesuaian otomatis berdasarkan ukuran elemen. Dengan menggunakan properti seperti `justify-content`, `align-items`, dan `flex-wrap`, Flexbox memungkinkan pengaturan yang dinamis untuk elemen, seperti meratakan, memusatkan, atau mendistribusikan ruang secara seragam di dalam kontainer.
+
+**Grid Layout** adalah sistem dua dimensi yang lebih kompleks dibandingkan Flexbox, yang memungkinkan pengaturan elemen dalam baris dan kolom. Grid sangat berguna untuk tata letak yang lebih terstruktur, di mana pengembang dapat mendefinisikan area grid dan posisi elemen dengan presisi. Properti seperti `grid-template-columns`, `grid-template-rows`, dan `grid-area` membantu membuat desain yang lebih grid-based dan simetris, ideal untuk tata letak halaman yang kompleks dengan beberapa elemen.
+
+Keduanya memiliki kegunaan yang berbeda: Flexbox lebih baik untuk tata letak satu dimensi, seperti membuat navigasi horizontal atau kolom kartu produk, sementara Grid cocok untuk tata letak dua dimensi yang lebih kompleks, seperti desain halaman web dengan header, konten, dan sidebar yang harus diatur dalam area grid tertentu. Penggunaan keduanya memungkinkan fleksibilitas yang tinggi dalam desain web modern.
+</details>

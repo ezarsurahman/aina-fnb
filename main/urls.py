@@ -14,5 +14,5 @@ urlpatterns = [
     path('login/', login_user, name="login"),
     path('logout/', logout_user, name="logout"),
     path('edit-food/<uuid:id>', edit_food, name="edit_food" ),
-    path('delet-food/<uuid:id>', delete_food, name="delete_food")
+    path('delete-food/<uuid:id>', delete_food, name="delete_food")
 ]
