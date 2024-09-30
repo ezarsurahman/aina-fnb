@@ -71,7 +71,9 @@ def login_user(request):
             user = form.get_user()
             login(request,user)
             response = HttpResponseRedirect(reverse('main:show_main'))
-            response.set_cookie('last_login',str(datetime.datetime.now()))
+            date_now = datetime.datetime.now()
+            date_formatted = date_now.strftime("%a %B %Y - %H:%I:%M")
+            response.set_cookie('last_login',date_formatted)
             return response
         else:
             messages.error(request, "Invalid username or password")
