@@ -7,15 +7,16 @@ from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from main.models import FoodEntry
 from main.forms import FoodEntryForm
 @login_required(login_url='login/')
 def show_main(request):
-    food_entries = FoodEntry.objects.filter(user=request.user)
+    
     context = {
         'name' : request.user.username,
-        'food_entries': food_entries,
         'nama_aplikasi': "Aina Homecook",
         "nama_saya" : "Ezar Akhdan Shada Surahman",
         "kelas_saya" : "PBP B",
@@ -36,11 +37,11 @@ def create_food_entry(request):
     return render(request, "create_food_entry.html", context)
 
 def show_xml(request):
-    data = FoodEntry.objects.all()
+    data = FoodEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("xml", data), content_type="application/xml")
 
 def show_json(request):
-    data = FoodEntry.objects.all()
+    data = FoodEntry.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_xml_by_id(request,id):
@@ -107,3 +108,20 @@ def delete_food(request,id):
     food = FoodEntry.objects.get(pk=id)
     food.delete()
     return HttpResponseRedirect(reverse("main:show_main"))
+
+@csrf_exempt
+@require_POST
+def add_food_entry_ajax(request):
+    img = request.POST.get("img")
+    name = request.POST.get("name")
+    price = request.POST.get("price")
+    ready = request.POST.get("ready")
+    description = request.POST.get("description")
+
+    new_food = FoodEntry(
+        img=img, name=name,
+        price=price, ready=ready,
+        description=description, user=request.user
+    )
+    new_food.save()
+    return HttpResponse(b"CREATED",status=201)
