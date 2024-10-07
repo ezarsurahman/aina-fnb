@@ -3,6 +3,7 @@
 
 {% block meta %}
 <title>Dallas Cuisines</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
 {% block content %}
 {% include 'navbar.html' %}
@@ -160,19 +161,24 @@
     } else {
       classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full px-4";
       foodEntries.forEach((item) => {
+        const img = DOMPurify.sanitize(item.fields.img)
+        const name = DOMPurify.sanitize(item.fields.name)
+        const price = DOMPurify.sanitize(item.fields.price)
+        const ready = DOMPurify.sanitize(item.fields.ready)
+        const description = DOMPurify.sanitize(item.fields.description)
         htmlString += `
         <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white border border-gray-300 min-h-md max-h-md transition duration-500 hover:scale-110">
-    <img class="w-full h-48 object-cover" src="${item.fields.img }" alt="${ item.fields.name }">
+    <img class="w-full h-48 object-cover" src="${img}" alt="${ name }">
     <div class="px-6 py-4 min-h-full">
-      <div class="font-bold text-xl mb-2 text-green-700">${ item.fields.name }</div>
+      <div class="font-bold text-xl mb-2 text-green-700">${ name }</div>
       <p class="text-gray-700 text-base mb-2">
-        ${ item.fields.description }
+        ${ description }
       </p>
       <div class="text-lg text-green-800 font-semibold mb-2">
-        Rp.${ item.fields.price }
+        Rp.${ price }
       </div>
       <div class="mb-4">`
-        if(item.fields.ready === "Ready") {
+        if(ready === "Ready") {
           htmlString += `<span class="text-green-600 font-bold px-3 border-2 border-green-600 rounded-full">Ready</span>`
           
         } else {

@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 from django.contrib import messages
 from main.models import FoodEntry
 from main.forms import FoodEntryForm
@@ -112,11 +113,11 @@ def delete_food(request,id):
 @csrf_exempt
 @require_POST
 def add_food_entry_ajax(request):
-    img = request.POST.get("img")
-    name = request.POST.get("name")
-    price = request.POST.get("price")
-    ready = request.POST.get("ready")
-    description = request.POST.get("description")
+    img = strip_tags(request.POST.get("img"))
+    name = strip_tags(request.POST.get("name"))
+    price = strip_tags(request.POST.get("price"))
+    ready = strip_tags(request.POST.get("ready"))
+    description = strip_tags(request.POST.get("description"))
 
     new_food = FoodEntry(
         img=img, name=name,
