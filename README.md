@@ -429,3 +429,207 @@ Jika kita membayangkan elemen sebagai sebuah kotak:
 
 Keduanya memiliki kegunaan yang berbeda: Flexbox lebih baik untuk tata letak satu dimensi, seperti membuat navigasi horizontal atau kolom kartu produk, sementara Grid cocok untuk tata letak dua dimensi yang lebih kompleks, seperti desain halaman web dengan header, konten, dan sidebar yang harus diatur dalam area grid tertentu. Penggunaan keduanya memungkinkan fleksibilitas yang tinggi dalam desain web modern.
 </details>
+
+<details>
+<summary>Tugas 6</summary>
+
+### Implementasi Checklist
+#### Menampilkan FoodEntries dengan AJAX
+1. Untuk mengimplementasi AJAX `GET` pada penampilan food cards, saya tidak perlu data-data food untuk dikirim melalui context views. Oleh karena itu, saya menghapus dua baris ini pada function `show_main` di `views.py`:
+```
+food_entries = FoodEntry.objects.filter(user=request.user)
+'food_entries' : food_entries,
+```
+2. Saya juga mengubah data yang dikirim oleh `show_xml` dan `show_json` hanya agar mengembalikan menu (FoodEntry) yang dimiliki oleh user.
+```
+data = FoodEntry.objects.filter(user=request.user)
+```
+3. Agar penampilan data di-handle oleh AJAX, saya menghapus block conditional yang menampilkan `food_entries` pada html, lalu saya menggantinya dengan sebuah `div`:
+```
+<div id="food_entry_cards"></div>
+```
+4. Pada bagian bawah file, saya membuat logika JavaScript dengan `<script>` tag dan memasukkan function `getFoodEntries()` yang akan mengambil data berbentuk JSON dari `show_json`
+```
+async function getFoodEntries() {
+    return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+  }
+```
+5. Saya juga menambahkan function `refreshFoodEntries()` untuk menampilkan menu. Function ini menampilkan food card untuk setiap menu yang ada
+```
+async function refreshFoodEntries() {
+    document.getElementById("food_entry_cards").innerHTML = "";
+    document.getElementById("food_entry_cards").className = "";
+    const foodEntries = await getFoodEntries();
+    let htmlString = "";
+    let classNameString = "";
+    if(foodEntries.length === 0) {
+      classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+      htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                  <img src="{% static 'image/no-item-found.png' %}" alt="Not Found" class="w-32 h-32 mb-4"/>
+                  <p class="text-center text-gray-600 mt-4">Belum ada menu yang terdaftar, harap langsung mengunjungi Kantin Dallas.</p>
+                </div>
+        `;
+
+    } else {
+      classNameString = "columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full px-4";
+      foodEntries.forEach((item) => {
+        const img = DOMPurify.sanitize(item.fields.img)
+        const name = DOMPurify.sanitize(item.fields.name)
+        const price = DOMPurify.sanitize(item.fields.price)
+        const ready = DOMPurify.sanitize(item.fields.ready)
+        const description = DOMPurify.sanitize(item.fields.description)
+        htmlString += `
+        <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white border border-gray-300 min-h-md max-h-md transition duration-500 hover:scale-110">
+    <img class="w-full h-48 object-cover" src="${img}" alt="${ name }">
+    <div class="px-6 py-4 min-h-full">
+      <div class="font-bold text-xl mb-2 text-green-700">${ name }</div>
+      <p class="text-gray-700 text-base mb-2">
+        ${ description }
+      </p>
+      <div class="text-lg text-green-800 font-semibold mb-2">
+        Rp.${ price }
+      </div>
+      <div class="mb-4">`
+        if(ready === "Ready") {
+          htmlString += `<span class="text-green-600 font-bold px-3 border-2 border-green-600 rounded-full">Ready</span>`
+          
+        } else {
+          htmlString += `<span class="text-red-600 font-bold px-3 border-2 border-red-600 rounded-full">Out of stock</span>`
+        }
+        htmlString += `
+      </div>
+
+      <!-- Order Now Button -->
+      <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+        Order Now
+      </button>
+
+      <!-- Edit Button -->
+      <a href="/edit-food/${item.pk}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 inline-block">
+        Edit
+      </a>
+
+      <!-- Delete Button -->
+      <a href="/delete-food/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mt-4 inline-block">
+        Delete
+      </a>
+    </div>
+</div>
+        `
+      });
+    }
+    document.getElementById("food_entry_cards").className = classNameString;
+    document.getElementById("food_entry_cards").innerHTML = htmlString;
+  }
+```
+
+#### Membuat Modal sebagai form untuk menambahkan Food
+6. Selanjutnya, saya menambahkan modal pada html dengan kode berikut:
+```
+<div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+      <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t">
+          <h3 class="text-xl font-semibold text-gray-900">
+            Add New Food
+          </h3>
+          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn" data-modal-toggle="crudModal">
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="px-6 py-4 space-y-6 form-style">
+          <form id="foodEntryForm">
+            <div class="mb-4">
+              <label for="img" class="block text-sm font-medium text-gray-700">Menu Image</label>
+              <input type="text" id="img" name="img" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-yellow-700" placeholder="Enter image URL" required>
+            </div>
+            <div class="mb-4">
+              <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+              <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-yellow-700" placeholder="Enter menu name" required>
+            </div>
+            <div class="mb-4">
+              <label for="price" class="block text-sm font-medium text-gray-700">Price (Rp)</label>
+              <input type="text" id="price" name="price" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-yellow-700" placeholder="Enter price" required>
+            </div>
+            <div class="mb-4">
+              <label for="ready" class="block text-sm font-medium text-gray-700">Name</label>
+              <input type="text" id="ready" name="ready" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-yellow-700" placeholder="Ready/No" required>
+            </div>
+            <div class="mb-4">
+              <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="description" name="description" rows="3" class="mt-1 block w-full h-52 resize-none border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter menu description" required></textarea>
+            </div>
+            
+          </form>
+        </div>
+        <!-- Modal footer -->
+        <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+          <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+          <button type="submit" id="submitFoodEntry" form="foodEntryForm" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Save</button>
+        </div>
+      </div>
+    </div>
+```
+7. Agar modal bisa ditampilkan dan ditutup, saya menambahkan beberapa function yaitu : `showModal()` dan `hideModal()` lalu menambahkan sebuah event listener kepada button yang berhubungan.
+8. Tidak lupa untuk menampilkan button baru untuk menampilkan Modal
+9. Agar data pada form bisa tersimpan pada database, saya menambahkan function `addFoodEntry` yang akan melakukan `POST` ke `add_food_entry_ajax`.
+10. Saya juga menambahkan event listener pada tombol submit di form tersebut.
+
+#### Membuat logic `add_food_entry_ajax` pada Django
+11. Saya membuat function `add_mood_entry_ajax` yang menggunakan decorator `csrf_extempt` dan `require_POST` dari Django. Function ini akan menyimpan FoodEntry baru yang diinput melalui modal add entry by AJAX.
+12. Agar views bisa terintegrasi, saya menambahkan routing-an untuk function ini pada path `create-ajax`:
+```
+path('create-ajax', add_food_entry_ajax, name="add_food_entry_ajax")
+```
+
+#### XSS Defence
+13. Agar data terlindung dari Cross Site Scripting, saya menggunakan `strip_tags` dari `django.utils.html` untuk membersihkan data yang diinput di setiap field.
+14. Saya juga menambahkan 5 function baru pada `forms.py` untuk membersihkan setiap input.
+```
+    def clean_img(self):
+        img = self.cleaned_data["img"]
+        return strip_tags(img)
+
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        return strip_tags(name)
+    
+    def clean_price(self):
+        price = self.cleaned_data["price"]
+        return strip_tags(price)
+    
+    def clean_ready(self):
+        ready = self.cleaned_data["ready"]
+        return strip_tags(ready)
+    
+    def clean_description(self):
+        description = self.cleaned_data["description"]
+        return strip_tags(description)
+```
+
+#### Membersihkan data dengan DOMPurify
+15. Pertama, saya memasukkan CDN DOMPurify pada bagian `meta` di `main.html`
+16. Selanjutnya, saya menggunakan `DOMPurify.sanitize()` pada setiap field yang ditampilkan di card food.
+
+### Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+JavaScript memungkinkan aplikasi web menjadi lebih interaktif dan responsif, karena dapat memperbarui elemen halaman tanpa memuat ulang seluruh halaman. Dengan menggunakan AJAX, JavaScript bisa melakukan permintaan data ke server secara asinkron, meningkatkan pengalaman pengguna dengan waktu respon yang lebih cepat.
+
+Selain itu, JavaScript berjalan di sisi klien, sehingga beban server berkurang dan performa aplikasi meningkat. Kompatibilitasnya dengan berbagai framework seperti React dan Vue juga mempermudah pengembangan aplikasi web yang dinamis dan kompleks.
+
+### Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+Fungsi dari penggunaan `await` saat menggunakan `fetch()` adalah untuk menunggu hasil dari operasi asinkron tersebut sebelum melanjutkan eksekusi kode berikutnya. `fetch()` adalah fungsi asinkron yang mengembalikan Promise, dan dengan `await`, kita dapat menghentikan eksekusi sementara hingga data diterima, sehingga hasil `fetch()` bisa langsung digunakan tanpa perlu menggunakan `then()`. Hal ini membuat kode lebih mudah dibaca dan dikelola, terutama dalam alur yang melibatkan beberapa operasi asinkron secara berurutan.
+
+Jika kita tidak menggunakan `await`, kode akan melanjutkan eksekusi langsung setelah `fetch()` dipanggil, tanpa menunggu hasilnya. Ini berarti kode di bawah `fetch()` akan dijalankan sebelum data diterima, yang bisa menyebabkan error atau hasil yang tidak diinginkan karena data belum siap. Dalam kasus ini, kita perlu mengelola `Promise` yang dihasilkan `fetch()` secara manual dengan `.then()` untuk memastikan data tersedia sebelum melanjutkan.
+
+### Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+Decorator `csrf_exempt` diperlukan pada view untuk AJAX POST karena Django secara default menerapkan proteksi CSRF (Cross-Site Request Forgery) pada semua permintaan POST. Proteksi ini mencegah permintaan dari sumber yang tidak sah dengan memastikan setiap permintaan POST berisi token CSRF yang valid. Namun, AJAX request dari JavaScript di sisi klien seringkali tidak menyertakan token CSRF secara otomatis. Dengan `csrf_exempt`, kita dapat menonaktifkan proteksi ini pada view tertentu sehingga request AJAX dapat diterima tanpa memerlukan token CSRF, meskipun perlu berhati-hati karena ini bisa meningkatkan risiko keamanan.
+
+### Pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Pembersihan data input pengguna perlu dilakukan di backend untuk memastikan keamanan dan integritas data, karena data yang datang dari frontend bisa dimanipulasi oleh pengguna. Meskipun validasi di frontend dapat memberikan pengalaman pengguna yang lebih baik dengan respons cepat, hal ini tidak cukup untuk melindungi aplikasi dari serangan seperti (XSS). Backend tidak boleh bergantung pada frontend untuk keamanan, karena data bisa langsung dikirimkan ke server menggunakan alat seperti Postman atau curl, melewati validasi di frontend. Oleh karena itu, validasi dan pembersihan data di backend adalah langkah penting untuk memastikan bahwa data yang masuk benar-benar aman dan sesuai dengan standar yang diinginkan.
+
+</details>
